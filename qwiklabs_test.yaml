@@ -13,7 +13,7 @@ resources:
     type: vpn.py
     properties:
       region: us-central1
-      network: $(ref.my-custom-network-1.name)
+      network: $(ref.my-custom-network-1.selfLink)
       peerAddress: 1.2.3.4
       asn: 64515
       sharedSecret: superSecretPassw0rd
