@@ -1,5 +1,5 @@
 imports:
-  - path: ../cloud-foundation/templates/vpn/vpn.py
+  - path: ./cloud-foundation/templates/vpn/vpn.py
     name: vpn.py
   - path: ./cloud-foundation/templates/network/network.py
     name: network.py
@@ -57,7 +57,7 @@ resources:
           - your-tag
 
 outputs:
-- name: ASN
+- name: PeerASN
   value: 64516
 - name: OnPrem_CIDR_Block
   value: 10.1.3.0/24
