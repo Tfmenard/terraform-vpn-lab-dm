@@ -7,6 +7,8 @@ imports:
     name: cloud_router.py
   - path: ./cloud-foundation/templates/instance/instance.py
     name: instance.py
+  - path: ./cloud-foundation/templates/ip_reservation/ip_reservation.py
+    name: ip_reservation.py
 
 resources:
   - name: test-vpn
@@ -34,7 +36,7 @@ resources:
     type: cloud_router.py
     properties:
       name: cr-uscentral1-to-gcp-vpc-tunnels
-      network: $(ref.my-custom-network-1.name)
+      network: $(ref.my-custom-network-1.selfLink)
       region: us-central1
       asn: 64516
 
@@ -46,7 +48,7 @@ resources:
       diskSizeGb: 100
       machineType: f1-micro
       diskType: pd-ssd
-      network: my-custom-network-1
+      network: $(ref.my-custom-network-1.name)
       subnetwork: $(ref.my-custom-network-1.subnetworks.my-first-subnet.selfLink)
       metadata:
         items:
@@ -55,6 +57,25 @@ resources:
       tags:
         items:
           - your-tag
+
+  - name: allmyips
+    type: ip_reservation.py
+    properties:
+      ipAddresses:
+        - name: myglobal
+          ipType: global
+          description: 'my global ip'
+        - name: myregionalexternal
+          ipType: regional
+          region: <FIXME:region>
+          description: 'my static external ip'
+        - name: myinternal
+          ipType: internal
+          # This IP address must be within the subnet range.
+          address: 10.128.1.111
+          subnetwork: projects/<FIXME:project_id>/regions/<FIXME:region>/subnetworks/<FIXME:subnet>
+          region: <FIXME:region>
+          description: 'my internal ip'
 
 outputs:
 - name: PeerASN
