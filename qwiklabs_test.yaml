@@ -14,8 +14,8 @@ resources:
   - name: test-vpn
     type: vpn.py
     properties:
-      region: us-central1
-      network: $(ref.my-custom-network-1.selfLink)
+      region: europe-west1
+      network: $(ref.my-custom-network-1.name)
       peerAddress: 1.2.3.4
       asn: 64515
       sharedSecret: superSecretPassw0rd
@@ -27,7 +27,7 @@ resources:
       autoCreateSubnetworks: false
       subnetworks:
         - name: my-first-subnet
-          region: us-central1
+          region: europe-west1
           ipCidrRange: 10.5.4.0/24
           privateIpGoogleAccess: false
           enableFlowLogs: true
@@ -37,7 +37,7 @@ resources:
     properties:
       name: cr-uscentral1-to-gcp-vpc-tunnels
       network: my-custom-network-1
-      region: us-central1
+      region: europe-west1
       asn: 64516
     metadata:
       dependsOn:
@@ -46,12 +46,12 @@ resources:
   - name: onprem-instance
     type: instance.py
     properties:
-      zone: us-central1-a
+      zone: europe-west1-b
       diskImage: projects/ubuntu-os-cloud/global/images/family/ubuntu-1804-lts
       diskSizeGb: 100
       machineType: f1-micro
       diskType: pd-ssd
-      network: $(ref.my-custom-network-1.name)
+      network: my-custom-network-1
       subnetwork: $(ref.my-custom-network-1.subnetworks.my-first-subnet.selfLink)
       metadata:
         items:
@@ -67,7 +67,7 @@ resources:
  #     ipAddresses:
  #       - name: myregionalexternal
  #         ipType: REGIONAL
- #         region: us-central1
+ #         region: europe-west1
  #         description: 'my static external ip'
 
 outputs:
