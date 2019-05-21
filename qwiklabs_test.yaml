@@ -58,24 +58,14 @@ resources:
         items:
           - your-tag
 
-  - name: allmyips
-    type: ip_reservation.py
-    properties:
-      ipAddresses:
-        - name: myglobal
-          ipType: global
-          description: 'my global ip'
-        - name: myregionalexternal
-          ipType: regional
-          region: <FIXME:region>
-          description: 'my static external ip'
-        - name: myinternal
-          ipType: internal
-          # This IP address must be within the subnet range.
-          address: 10.128.1.111
-          subnetwork: projects/<FIXME:project_id>/regions/<FIXME:region>/subnetworks/<FIXME:subnet>
-          region: <FIXME:region>
-          description: 'my internal ip'
+ # - name: myexternalip
+ #   type: ip_reservation.py
+ #   properties:
+ #     ipAddresses:
+ #       - name: myregionalexternal
+ #         ipType: REGIONAL
+ #         region: us-central1
+ #         description: 'my static external ip'
 
 outputs:
 - name: PeerASN
@@ -84,3 +74,5 @@ outputs:
   value: 10.1.3.0/24
 - name: onPrem_VM_internalIP
   value: $(ref.onprem-instance.internalIp)
+#- name: ExternalIP
+#  value: $(ref.myexternalip.address) This also fails to find the address output
