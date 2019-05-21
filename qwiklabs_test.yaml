@@ -1,0 +1,65 @@
+imports:
+  - path: ../cloud-foundation/templates/vpn/vpn.py
+    name: vpn.py
+  - path: ./cloud-foundation/templates/network/network.py
+    name: network.py
+  - path: ./cloud-foundation/templates/cloud_router/cloud_router.py
+    name: cloud_router.py
+  - path: ./cloud-foundation/templates/instance/instance.py
+    name: instance.py
+
+resources:
+  - name: test-vpn
+    type: vpn.py
+    properties:
+      region: us-central1
+      network: $(ref.my-custom-network-1.name)
+      peerAddress: 1.2.3.4
+      asn: 64515
+      sharedSecret: superSecretPassw0rd
+      router: $(ref.cr-uscentral1-to-gcp-vpc-tunnels.name)
+
+  - name: my-custom-network-1
+    type: network.py
+    properties:
+      autoCreateSubnetworks: false
+      subnetworks:
+        - name: my-first-subnet
+          region: us-central1
+          ipCidrRange: 10.5.4.0/24
+          privateIpGoogleAccess: false
+          enableFlowLogs: true
+
+  - name: cr-uscentral1-to-gcp-vpc-tunnels
+    type: cloud_router.py
+    properties:
+      name: cr-uscentral1-to-gcp-vpc-tunnels
+      network: $(ref.my-custom-network-1.name)
+      region: us-central1
+      asn: 64516
+
+  - name: onprem-instance
+    type: instance.py
+    properties:
+      zone: us-central1-a
+      diskImage: projects/ubuntu-os-cloud/global/images/family/ubuntu-1804-lts
+      diskSizeGb: 100
+      machineType: f1-micro
+      diskType: pd-ssd
+      network: my-custom-network-1
+      subnetwork: $(ref.my-custom-network-1.subnetworks.my-first-subnet.selfLink)
+      metadata:
+        items:
+          - key: startup-script
+            value: sudo apt-get update && sudo apt-get install -y nginx
+      tags:
+        items:
+          - your-tag
+
+outputs:
+- name: ASN
+  value: 64516
+- name: OnPrem_CIDR_Block
+  value: 10.1.3.0/24
+- name: onPrem_VM_internalIP
+  value: $(ref.onprem-instance.internalIp)
