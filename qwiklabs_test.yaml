@@ -20,6 +20,9 @@ resources:
       asn: 64515
       sharedSecret: superSecretPassw0rd
       router: $(ref.cr-uscentral1-to-gcp-vpc-tunnels.name)
+    metadata:
+      dependsOn:
+      - my-custom-network-1
 
   - name: my-custom-network-1
     type: network.py
@@ -36,9 +39,12 @@ resources:
     type: cloud_router.py
     properties:
       name: cr-uscentral1-to-gcp-vpc-tunnels
-      network: $(ref.my-custom-network-1.selfLink)
+      network: $(ref.my-custom-network-1.name)
       region: us-central1
       asn: 64516
+    metadata:
+      dependsOn:
+      - my-custom-network-1
 
   - name: onprem-instance
     type: instance.py
